@@ -24,7 +24,7 @@ app.get('/:city', (req, res) => {
     json: true
   })
     .then((data) => {
-      res.render('index', data)
+      res.render('home', data)
     })
     .catch((err) => {
       console.log(err)
