@@ -1,8 +1,7 @@
-// index.js
-const path = require('path')
 const express = require('express')
+const rp = require('request-promise')
 const exphbs = require('express-handlebars')
-const port = 3000
+const path = require('path')
 
 const app = express()
 
@@ -14,86 +13,23 @@ app.engine('.hbs', exphbs({
 app.set('view engine', '.hbs')
 app.set('views', path.join(__dirname, 'views'))
 
-app.get('/', (request, response) => {
-    response.render('home', {
-      name: 'John'
-    })
+app.get('/:city', (req, res) => {
+  rp({
+    uri: 'http://apidev.accuweather.com/locations/v1/search',
+    qs: {
+      q: req.params.city,
+      apiKey: 'G1veLlj2IB68MK8xMHLmMHjHlAnyHO8a'
+         // Use your accuweather API key here
+    },
+    json: true
   })
+    .then((data) => {
+      res.render('index', data)
+    })
+    .catch((err) => {
+      console.log(err)
+      res.render('error')
+    })
+})
 
 app.listen(3000)
-
-/***********************************************/
-
-// content of index.js
-// const http = require('http')
-// const port = 3000
-
-// const requestHandler = (request, response) => {
-//   console.log(request.url)
-//   response.end('Hello Node.js Server!')
-// }
-
-// const server = http.createServer(requestHandler)
-
-// server.listen(port, (err) => {
-//   if (err) {
-//     return console.log('something bad happened', err)
-//   }
-
-//   console.log(`server is listening on ${port}`)
-// })
-/***********************************************/
-
-// const express = require('express')
-// const app = express()
-// const port = 3000
-
-// app.get('/', (request, response) => {
-//   response.send('Hello from Express!')
-// })
-
-// app.listen(port, (err) => {
-//   if (err) {
-//     return console.log('something bad happened', err)
-//   }
-
-//   console.log(`server is listening on ${port}`)
-// })
-
-/***********************************************/
-// const express = require('express')
-// const app = express()
-
-// app.use((request, response, next) => {
-//   console.log(request.headers)
-//   next()
-// })
-
-// app.use((request, response, next) => {
-//   request.chance = Math.random()
-//   next()
-// })
-
-// app.get('/', (request, response) => {
-//   response.json({
-//     chance: request.chance
-//   })
-// })
-// app.listen(3000)
-
-/***********************************************/
-// const express = require('express')
-// const app = express()
-
-// app.get('/', (request, response) => {
-//     throw new Error('oops')
-//   })
-  
-//   app.use((err, request, response, next) => {
-//     // log the error, for now just console.log
-//     console.log(err)
-//     response.status(500).send('Something broke!')
-//   })
-
-// app.listen(3000)
-/***********************************************/
